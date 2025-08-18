@@ -15,6 +15,10 @@ public abstract class BaseDictionary implements Dictionary {
         return dictionary;
     }
 
+    public String getSeparator() {
+        return separator;
+    }
+
     @Override
     public void fillFromFile(String path) throws IOException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
@@ -50,14 +54,14 @@ public abstract class BaseDictionary implements Dictionary {
     @Override
     public String find(String key) {
         if (!dictionary.containsKey(key)) {
-            throw new IllegalArgumentException("Слово не найдено");
+            throw new IllegalArgumentException("Слово" + key + " не найдено");
         }
         return dictionary.get(key);
     }
 
     @Override
     public void add(String key, String value) {
-        if (!isValidKey(key) || dictionary.containsKey(key)) {
+        if (!isValidKey(key) || dictionary.containsKey(key) || value.isBlank()) {
             throw new IllegalArgumentException("Формат слова " + key + " не подходит для данного словаря");
         }
         dictionary.put(key,value);
@@ -67,10 +71,6 @@ public abstract class BaseDictionary implements Dictionary {
 
     @Override
     public String toString() {
-        if (dictionary.isEmpty()) {
-            return "Словарь пуст";
-        }
-
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry : dictionary.entrySet()) {
             builder.append(entry.getKey()).append(" - ").append(entry.getValue()).append("\n");
