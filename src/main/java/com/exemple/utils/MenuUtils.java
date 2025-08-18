@@ -35,7 +35,10 @@ public class MenuUtils {
 
     public static File createFile(File file) {
         try{
-            file.createNewFile();
+            if(!checkFile(file.getAbsoluteFile())) {
+                file.createNewFile();
+                return file;
+            }
             return file;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -59,8 +62,9 @@ public class MenuUtils {
 
     public static void showDictionaries(BaseDictionary... dictionaries) {
         for(BaseDictionary dictionary : dictionaries) {
+            String strDict = StringUtils.isNotEmpty(dictionary.toString()) ? dictionary.toString() : "Спипок пуст";
             System.out.println("===============");
-            System.out.println(dictionary);
+            System.out.println(strDict);
             System.out.println("===============");
         }
     }
