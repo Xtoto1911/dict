@@ -11,8 +11,12 @@ public abstract class BaseDictionary implements Dictionary {
     protected final Map<String, String> dictionary = new LinkedHashMap<>();
     protected final String separator = " - ";
 
-    protected BaseDictionary(String path) throws IOException {
-        fillFromFile(path);
+    public Map<String, String> getDictionary() {
+        return dictionary;
+    }
+
+    public String getSeparator() {
+        return separator;
     }
 
     @Override
@@ -22,8 +26,9 @@ public abstract class BaseDictionary implements Dictionary {
             while (StringUtils.isNotEmpty(line)) {
                 String[] pair = line.split(separator, 2);
                 String key = StringUtils.normalize(pair[0]);
-                if (pair.length == 2) {
-                    add(StringUtils.clean(pair[0]), StringUtils.clean(pair[1]));
+                if (pair.length == 2 && StringUtils.checkValue(pair[1])) {
+                    String value = StringUtils.normalize(pair[1]);
+                    add(StringUtils.clean(key), StringUtils.clean(value));
                 } else {
                     throw new IOException("Строка " + line + " не соответствует формату \"ключ - значение\"");
                 }
@@ -50,7 +55,7 @@ public abstract class BaseDictionary implements Dictionary {
     @Override
     public String find(String key) {
         if (!dictionary.containsKey(key)) {
-            throw new IllegalArgumentException("Слово не найдено");
+            throw new IllegalArgumentException("Слово" + key + " не найдено");
         }
         return dictionary.get(key);
     }
@@ -60,6 +65,9 @@ public abstract class BaseDictionary implements Dictionary {
         if (!isValidKey(key) || dictionary.containsKey(key)) {
             throw new IllegalArgumentException("Формат слова " + key + " не подходит для данного словаря");
         }
+        if(!StringUtils.checkValue(value)){
+            throw new IllegalArgumentException("Формат слова " + value + " не подходит для данного словаря");
+        }
         dictionary.put(key,value);
     }
 
@@ -67,10 +75,6 @@ public abstract class BaseDictionary implements Dictionary {
 
     @Override
     public String toString() {
-        if (dictionary.isEmpty()) {
-            return "Словарь пуст";
-        }
-
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry : dictionary.entrySet()) {
             builder.append(entry.getKey()).append(" - ").append(entry.getValue()).append("\n");
