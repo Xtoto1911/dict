@@ -11,8 +11,8 @@ public abstract class BaseDictionary implements Dictionary {
     protected final Map<String, String> dictionary = new LinkedHashMap<>();
     protected final String separator = " - ";
 
-    protected BaseDictionary(String path) throws IOException {
-        fillFromFile(path);
+    public Map<String, String> getDictionary() {
+        return dictionary;
     }
 
     @Override
