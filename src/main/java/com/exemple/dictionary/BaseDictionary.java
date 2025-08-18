@@ -26,8 +26,9 @@ public abstract class BaseDictionary implements Dictionary {
             while (StringUtils.isNotEmpty(line)) {
                 String[] pair = line.split(separator, 2);
                 String key = StringUtils.normalize(pair[0]);
-                if (pair.length == 2) {
-                    add(StringUtils.clean(pair[0]), StringUtils.clean(pair[1]));
+                if (pair.length == 2 && StringUtils.checkValue(pair[1])) {
+                    String value = StringUtils.normalize(pair[1]);
+                    add(StringUtils.clean(key), StringUtils.clean(value));
                 } else {
                     throw new IOException("Строка " + line + " не соответствует формату \"ключ - значение\"");
                 }
@@ -61,8 +62,11 @@ public abstract class BaseDictionary implements Dictionary {
 
     @Override
     public void add(String key, String value) {
-        if (!isValidKey(key) || dictionary.containsKey(key) || value.isBlank()) {
+        if (!isValidKey(key) || dictionary.containsKey(key)) {
             throw new IllegalArgumentException("Формат слова " + key + " не подходит для данного словаря");
+        }
+        if(!StringUtils.checkValue(value)){
+            throw new IllegalArgumentException("Формат слова " + value + " не подходит для данного словаря");
         }
         dictionary.put(key,value);
     }
