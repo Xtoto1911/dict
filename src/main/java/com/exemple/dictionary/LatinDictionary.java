@@ -2,7 +2,6 @@ package com.exemple.dictionary;
 
 import com.exemple.utils.StringUtils;
 
-import java.io.IOException;
 
 public class LatinDictionary extends BaseDictionary {
 
