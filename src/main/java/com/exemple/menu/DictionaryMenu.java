@@ -15,15 +15,20 @@ public class DictionaryMenu {
     private final Scanner scanner;
     private final Map<BaseDictionary, File> dictionaries;
 
-    public DictionaryMenu() {
+    private final BaseDictionary latinDictionary;
+    private final BaseDictionary numDictionary;
+
+    public DictionaryMenu(LatinDictionary latinDictionary, NumDictionary numDictionary) {
+        this.latinDictionary = latinDictionary;
+        this.numDictionary = numDictionary;
         scanner = new Scanner(System.in);
         dictionaries = new LinkedHashMap<>();
         initDictionaries();
     }
 
     private void initDictionaries() {
-        addDictionary(new LatinDictionary(), MenuUtils.createFile("latin.txt"));
-        addDictionary(new NumDictionary(), MenuUtils.createFile("num.txt"));
+        addDictionary(latinDictionary, MenuUtils.createFile("latin.txt"));
+        addDictionary(numDictionary, MenuUtils.createFile("num.txt"));
     }
 
     private void addDictionary(BaseDictionary dictionary, File file) {
@@ -80,12 +85,12 @@ public class DictionaryMenu {
         MenuUtils.showMessage("Введите путь к файлу: ");
         String path = MenuUtils.readInput(scanner);
         File newFile = new File(path);
-        if(!MenuUtils.checkFile(newFile)) {
+        if (!MenuUtils.checkFile(newFile)) {
             MenuUtils.createFile(newFile);
         }
         dictionary.getDictionary().clear();
         dictionary.fillFromFile(newFile.getAbsolutePath());
-        dictionaries.put(dictionary,newFile);
+        dictionaries.put(dictionary, newFile);
         return newFile.getAbsolutePath();
     }
 
