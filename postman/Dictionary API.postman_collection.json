@@ -1,0 +1,485 @@
+{
+	"info": {
+		"_postman_id": "3e60e73d-8256-452c-8ff4-78b2ab80cd7b",
+		"name": "Dictionary API",
+		"description": "API для работы со словарями (латинский и числовой)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45051644",
+		"_collection_link": "https://kirill-8256764.postman.co/workspace/39968b71-960c-4f24-8b88-80f605edbad6/collection/45051644-3e60e73d-8256-452c-8ff4-78b2ab80cd7b?action=share&source=collection_link&creator=45051644"
+	},
+	"item": [
+		{
+			"name": "Получить все записи",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/dictionaries",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"dictionaries"
+					]
+				},
+				"description": "Получить все записи из всех словарей"
+			},
+			"response": []
+		},
+		{
+			"name": "Получить записи по типу словаря",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/dictionaries/type/{{dictionaryType}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"dictionaries",
+						"type",
+						"{{dictionaryType}}"
+					],
+					"variable": [
+						{
+							"key": "dictionaryType",
+							"value": "latin",
+							"description": "Тип словаря: latin или num"
+						}
+					]
+				},
+				"description": "Получить записи конкретного типа словаря"
+			},
+			"response": []
+		},
+		{
+			"name": "Получить запись по ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/dictionaries/{{entryId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"dictionaries",
+						"{{entryId}}"
+					]
+				},
+				"description": "Получить конкретную запись по её ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Поиск записей",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/dictionaries/search?query={{searchQuery}}&dictionaryType={{searchType}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"dictionaries",
+						"search"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "{{searchQuery}}",
+							"description": "Строка для поиска"
+						},
+						{
+							"key": "dictionaryType",
+							"value": "{{searchType}}",
+							"description": "Тип словаря для фильтрации (опционально)"
+						}
+					],
+					"variable": [
+						{
+							"key": "searchQuery",
+							"value": "qwer",
+							"description": "Поисковый запрос"
+						},
+						{
+							"key": "searchType",
+							"value": "latin",
+							"description": "Тип словаря: latin, num или пусто для всех"
+						}
+					]
+				},
+				"description": "Поиск записей по ключу или значению"
+			},
+			"response": []
+		},
+		{
+			"name": "Создать новую запись",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"key\": \"{{newKey}}\",\n  \"values\": [\"{{newValue}}\"],\n  \"dictionaryType\": \"{{newType}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/dictionaries",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"dictionaries"
+					]
+				},
+				"description": "Создать новую запись в словаре"
+			},
+			"response": []
+		},
+		{
+			"name": "Обновить существующую запись",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"key\": \"{{updateKey}}\",\n  \"values\": [\"{{updateValue}}\"],\n  \"dictionaryType\": \"{{updateType}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/dictionaries/{{entryId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"dictionaries",
+						"{{entryId}}"
+					]
+				},
+				"description": "Обновить существующую запись по ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Удалить запись",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/dictionaries/{{entryId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"dictionaries",
+						"{{entryId}}"
+					]
+				},
+				"description": "Удалить запись по ID (включая все её значения)"
+			},
+			"response": []
+		},
+		{
+			"name": "Удалить конкретное значение",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/dictionaries/{{entryId}}/values?value={{valueToDelete}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"dictionaries",
+						"{{entryId}}",
+						"values"
+					],
+					"query": [
+						{
+							"key": "value",
+							"value": "{{valueToDelete}}",
+							"description": "Значение для удаления"
+						}
+					],
+					"variable": [
+						{
+							"key": "valueToDelete",
+							"value": "слово для удаления",
+							"description": "Конкретное значение записи"
+						}
+					]
+				},
+				"description": "Удалить конкретное значение из записи"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"if (!pm.collectionVariables.get(\"baseUrl\")) {\r",
+					"    pm.collectionVariables.set(\"baseUrl\", \"http://localhost:8080\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"dictionaryId\")) {\r",
+					"    pm.collectionVariables.set(\"dictionaryId\", \"\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"entryId\")) {\r",
+					"    pm.collectionVariables.set(\"entryId\", \"\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"searchQuery\")) {\r",
+					"    pm.collectionVariables.set(\"searchQuery\", \"qwer\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"searchType\")) {\r",
+					"    pm.collectionVariables.set(\"searchType\", \"latin\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"newKey\")) {\r",
+					"    pm.collectionVariables.set(\"newKey\", \"asdf\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"newValue\")) {\r",
+					"    pm.collectionVariables.set(\"newValue\", \"новоеслово\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"newType\")) {\r",
+					"    pm.collectionVariables.set(\"newType\", \"latin\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"updateKey\")) {\r",
+					"    pm.collectionVariables.set(\"updateKey\", \"zxcv\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"updateValue\")) {\r",
+					"    pm.collectionVariables.set(\"updateValue\", \"обновленноеслово\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"updateType\")) {\r",
+					"    pm.collectionVariables.set(\"updateType\", \"latin\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"valueToDelete\")) {\r",
+					"    pm.collectionVariables.set(\"valueToDelete\", \"словодляудаления\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"dictionaryType\")) {\r",
+					"    pm.collectionVariables.set(\"dictionaryType\", \"latin\");\r",
+					"}\r",
+					"\r",
+					"if (!pm.collectionVariables.get(\"mockData\")) {\r",
+					"    pm.collectionVariables.set(\"mockData\", JSON.stringify({\r",
+					"        \"latin\": {\r",
+					"            \"key\": \"qwer\",\r",
+					"            \"value\": \"йцук\",\r",
+					"            \"type\": \"latin\"\r",
+					"        },\r",
+					"        \"num\": {\r",
+					"            \"key\": \"12345\",\r",
+					"            \"value\": \"йцуке\",\r",
+					"            \"type\": \"num\"\r",
+					"        }\r",
+					"    }));\r",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "dictionaryId",
+			"value": ""
+		},
+		{
+			"key": "entryId",
+			"value": ""
+		},
+		{
+			"key": "searchQuery",
+			"value": ""
+		},
+		{
+			"key": "searchType",
+			"value": ""
+		},
+		{
+			"key": "newKey",
+			"value": ""
+		},
+		{
+			"key": "newValue",
+			"value": ""
+		},
+		{
+			"key": "newType",
+			"value": ""
+		},
+		{
+			"key": "updateKey",
+			"value": ""
+		},
+		{
+			"key": "updateValue",
+			"value": ""
+		},
+		{
+			"key": "updateType",
+			"value": ""
+		},
+		{
+			"key": "valueToDelete",
+			"value": ""
+		},
+		{
+			"key": "dictionaryType",
+			"value": ""
+		},
+		{
+			"key": "mockData",
+			"value": ""
+		}
+	]
+}
