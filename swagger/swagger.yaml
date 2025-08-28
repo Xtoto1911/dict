@@ -1,0 +1,251 @@
+openapi: 3.0.4
+info:
+  title: Dictionary API
+  description: API для работы со словарями (латинский и числовой)
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /api/dictionaries:
+    get:
+      summary: Получить все записи
+      description: Возвращает список всех записей из всех словарей
+      responses:
+        '200':
+          description: Успешное получение записей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DictionaryEntry'
+        '500':
+          description: Внутренняя ошибка сервера
+
+    post:
+      summary: Создать новую запись
+      description: Создает новую запись в указанном словаре
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DictionaryEntryDto'
+      responses:
+        '201':
+          description: Запись создана успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DictionaryEntry'
+        '400':
+          description: Неверные данные записи
+        '409':
+          description: Ключ уже существует
+
+  /api/dictionaries/type/{dictionaryType}:
+    get:
+      summary: Получить записи по типу словаря
+      description: Возвращает записи конкретного типа словаря
+      parameters:
+        - name: dictionaryType
+          in: path
+          required: true
+          description: Тип словаря (latin или num)
+          schema:
+            type: string
+            enum: [latin, num]
+      responses:
+        '200':
+          description: Успешное получение записей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DictionaryEntry'
+        '400':
+          description: Неверный тип словаря
+
+  /api/dictionaries/{id}:
+    get:
+      summary: Получить запись по ID
+      description: Возвращает конкретную запись по её идентификатору
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID записи
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Запись найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DictionaryEntry'
+        '404':
+          description: Запись не найдена
+
+    put:
+      summary: Обновить существующую запись
+      description: Обновляет существующую запись по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID записи для обновления
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DictionaryEntryDto'
+      responses:
+        '200':
+          description: Запись обновлена успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DictionaryEntry'
+        '400':
+          description: Неверные данные записи
+        '404':
+          description: Запись не найдена
+        '409':
+          description: Ключ уже существует
+
+    delete:
+      summary: Удалить запись
+      description: Удаляет запись по ID (включая все её значения)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID записи для удаления
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Запись удалена успешно
+        '404':
+          description: Запись не найдена
+
+  /api/dictionaries/search:
+    get:
+      summary: Поиск записей
+      description: Поиск записей по ключу или значению с возможностью фильтрации по типу
+      parameters:
+        - name: query
+          in: query
+          required: true
+          description: Поисковый запрос
+          schema:
+            type: string
+        - name: dictionaryType
+          in: query
+          required: false
+          description: Тип словаря для фильтрации (опционально)
+          schema:
+            type: string
+            enum: [latin, num]
+      responses:
+        '200':
+          description: Поиск выполнен успешно
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DictionaryEntry'
+        '400':
+          description: Неверные параметры поиска
+
+  /api/dictionaries/{entryId}/values:
+    delete:
+      summary: Удалить конкретное значение
+      description: Удаляет конкретное значение из записи
+      parameters:
+        - name: entryId
+          in: path
+          required: true
+          description: ID записи
+          schema:
+            type: integer
+            format: int64
+        - name: value
+          in: query
+          required: true
+          description: Значение для удаления
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Значение удалено успешно
+        '400':
+          description: Неверные параметры
+        '404':
+          description: Запись не найдена
+
+components:
+  schemas:
+    DictionaryEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор записи
+          example: 1
+        key:
+          type: string
+          description: Ключ записи
+          example: "qwer"
+        values:
+          type: array
+          items:
+            type: string
+          description: Список значений записи
+          example: ["йцук"]
+        dictionaryType:
+          type: string
+          enum: [latin, num]
+          description: Тип словаря
+          example: "latin"
+      required:
+        - key
+        - dictionaryType
+
+    DictionaryEntryDto:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Ключ записи (4 буквы для latin, 5 цифр для num)
+          example: "qwer"
+        values:
+          type: array
+          items:
+            type: string
+          description: Список значений записи (кириллица)
+          example: ["йцук"]
+        dictionaryType:
+          type: string
+          enum: [latin, num]
+          description: Тип словаря
+          example: "latin"
+      required:
+        - key
+        - dictionaryType
+
+tags:
+  - name: Dictionary API
+    description: API для работы со словарями
