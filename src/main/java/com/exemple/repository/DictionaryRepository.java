@@ -5,6 +5,7 @@ import com.exemple.utils.DictionaryEntryMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.plaf.IconUIResource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,7 @@ public class DictionaryRepository {
     public Optional<DictionaryEntry> findById(Long id) {
         String query = "select id, key, dictionary_type from dictionary_entries where id = ?";
         List<DictionaryEntry> results = jdbcTemplate.query(query, new DictionaryEntryMapper(), id);
-        return results.isEmpty() ? Optional.empty() : Optional.of(results.getFirst());
+        return results.isEmpty() ? Optional.empty() : Optional.of(results.get(0));
     }
 
     public List<String> findValuesByEntryId(Long id) {
@@ -38,22 +39,40 @@ public class DictionaryRepository {
         return jdbcTemplate.queryForList(query, String.class, id);
     }
 
+    public boolean existsById(Long id) {
+        String query = "select count(*) from dictionary_entries where id = ?";
+        Integer cnt = jdbcTemplate.queryForObject(query, Integer.class, id);
+        return  cnt != null && cnt > 0;
+    }
+
+    public boolean existsByKeyAndType(String key, String dictionaryType) {
+        String query = "select count(*) from dictionary_entries where key = ? and dictionary_type = ?";
+        Integer cnt = jdbcTemplate.queryForObject(query, Integer.class, key, dictionaryType);
+        return cnt != null && cnt > 0;
+    }
+
+    public boolean existsByKeyAndTypeExcludingId(String key, String dictionaryType, Long id) {
+        String query = "select count(*) from dictionary_entries where key = ? and dictionary_type = ? and id != ?";
+        Integer cnt = jdbcTemplate.queryForObject(query, Integer.class, key, dictionaryType, id);
+        return cnt != null && cnt > 0;
+    }
+
     public List<DictionaryEntry> search(String query, String dictionaryType) {
         String sqlQuery = "";
         Object[] params;
 
         if (dictionaryType != null && !dictionaryType.isEmpty()) {
-            sqlQuery = "select distinct de.id, de.key, de.dictionary_type" +
+            sqlQuery = "select distinct de.id, de.key, de.dictionary_type " +
                     "from dictionary_entries de " +
-                    "left join dictionary_values dv on de.id = dv.entry_id" +
-                    "where de.dictionary_type = ? and (de.key ilike ? or dv.value ilike ?)" +
+                    "left join dictionary_values dv on de.id = dv.entry_id " +
+                    "where de.dictionary_type = ? and (de.key ilike ? or dv.value ilike ?) " +
                     "order by de.key";
             params = new Object[]{dictionaryType, "%" + query + "%", "%" + query + "%"};
         } else {
-            sqlQuery = "select distinct de.id, de.key, de.dictionary_type" +
+            sqlQuery = "select distinct de.id, de.key, de.dictionary_type " +
                     "from dictionary_entries de " +
-                    "left join dictionary_values dv on de.id = dv.entry_id" +
-                    "where de.key ilike ? or dv.value ilike ?" +
+                    "left join dictionary_values dv on de.id = dv.entry_id " +
+                    "where de.key ilike ? or dv.value ilike ? " +
                     "order by de.dictionary_type, de.key";
             params = new Object[]{"%" + query + "%", "%" + query + "%"};
         }

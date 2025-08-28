@@ -8,7 +8,7 @@ create table if not exists dictionary_entries (
 create table if not exists dictionary_values (
     id serial primary key,
     entry_id bigint not null references dictionary_entries(id) on delete cascade,
-    value varchar(255) not null,
+    value varchar(255) not null
 );
 
 create index if not exists idx_entries_key on dictionary_entries(key);

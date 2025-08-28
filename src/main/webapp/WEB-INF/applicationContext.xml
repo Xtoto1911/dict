@@ -9,8 +9,6 @@
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-    <context:component-scan base-package="com.exemple"/>
-    <mvc:annotation-driven/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver"/>
@@ -23,7 +21,6 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-
     <bean id="latinDictionary" class="com.exemple.dictionary.LatinDictionary"/>
 
     <bean id="numDictionary" class="com.exemple.dictionary.NumDictionary"/>
@@ -32,5 +29,7 @@
         <constructor-arg ref="latinDictionary"/>
         <constructor-arg ref="numDictionary"/>
     </bean>
+
+
 
 </beans>
