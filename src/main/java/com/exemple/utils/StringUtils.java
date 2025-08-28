@@ -21,6 +21,6 @@ public class StringUtils {
     }
 
     public static boolean checkValue(String str) {
-        return str.matches(VALUE_REGEX) && !str.isBlank();
+        return str != null && str.matches(VALUE_REGEX) && !str.isBlank();
     }
 }
