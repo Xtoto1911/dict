@@ -29,6 +29,7 @@ public class DictionaryController {
         return ResponseEntity.ok(service.getEntriesByType(dictionaryType));
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<DictionaryEntry> getEntryById(@PathVariable("id") Long id) {
         Optional<DictionaryEntry> entry = service.getEntryById(id);
@@ -42,6 +43,7 @@ public class DictionaryController {
         return entry.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+
     @GetMapping("/search")
     public ResponseEntity<List<DictionaryEntry>> search(
             @RequestParam String query,
@@ -51,8 +53,12 @@ public class DictionaryController {
 
     @PostMapping
     public ResponseEntity<DictionaryEntry> createEntry(@RequestBody DictionaryEntryDto entryDto) {
-        DictionaryEntry entry = service.createEntry(entryDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(entry);
+        try {
+            DictionaryEntry entry = service.createEntry(entryDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(entry);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")
